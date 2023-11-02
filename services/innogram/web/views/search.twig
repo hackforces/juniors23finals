@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #eeeeee;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 60%;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            background: linear-gradient(45deg, #3494E6, #EC6EAD);
+            color: white;
+            height: 30px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+        .header h1, .header h2 {
+            margin: 0;
+            font-size: 22px;
+        }
+        .main {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .posts, .new-profiles {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        .posts {
+            width: 65%;
+            margin-right: 7px;
+            margin-bottom: 35px;
+        }
+        .post {
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            max-height: 700px;
+        }
+        .post:hover {
+            transform: scale(1.01);
+        }
+        .post-controls {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .post-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            max-height: 500px;
+        }
+        .new-profiles {
+            width: 30%;
+            height: 500px;
+        }
+        .profile-name {
+            font-weight: bold;
+            word-wrap: break-word;
+            transition: all 0.3s ease;
+        }
+        .profile-name:hover {
+            color: #3494E6;
+        }
+        .profile {
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+        }
+        .profile p {
+            margin: 0 0 7px;
+        }
+        .username {
+            word-wrap: break-word;
+            margin-top: 0px;
+            word-wrap: break-word;
+            margin-top: 0px;
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; 
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #888;
+            font-size: 14px;
+        }
+        .btn-text {
+            background: none;
+            border: none;
+            color: inherit;
+            text-align: left;
+            font: inherit;
+            cursor: pointer;
+            margin: 0px;
+            padding: 0px;
+        }
+        .btn-text:hover {
+            color: #3494E6;
+        }
+        .whitehover:hover {
+            color: white;
+        }
+        .header-right-side {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+        }
+        .new-post {
+            padding-right: 20px;
+        }
+        .search-results-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        .search-query {
+            text-align: center;
+            margin-top: 0;
+        }
+        .header-search {
+            display: flex;
+            align-items: center;
+        }
+        .header-search input {
+            padding: 5px;
+            width: 200px;
+            border-radius: 7px;
+            border: none;
+            border-radius: 10px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script>
+        function loadSearchResults(query) {
+        fetch(`/api/search?query=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => {
+                const searchResultsContainer = document.querySelector('.search-results-container .posts');
+                searchResultsContainer.innerHTML = ''; // Clear the container
+
+                data.forEach(post => {
+                    // Create the post element
+                    const postElement = document.createElement('div');
+                    postElement.className = 'post';
+
+                    // Create the username element
+                    const usernameElement = document.createElement('button');
+                    usernameElement.className = 'btn-text';
+                    usernameElement.innerHTML = `<h3 class="username">${post.owner_username} <i class="fas fa-camera"></i></h3>`;
+                    usernameElement.onclick = () => goToUser(post.owner_username);
+                    postElement.appendChild(usernameElement);
+
+                    // Create the image element
+                    const imageElement = document.createElement('img');
+                    imageElement.className = 'post-image';
+                    imageElement.src = `/uploads?file=${post.image}`;
+                    imageElement.alt = 'Post Image';
+                    postElement.appendChild(imageElement);
+
+                    // Create the description element
+                    const descriptionElement = document.createElement('p');
+                    descriptionElement.textContent = post.description;
+                    postElement.appendChild(descriptionElement);
+
+                    // Create the post controls element
+                    const postControlsElement = document.createElement('div');
+                    postControlsElement.className = 'post-controls';
+                    postControlsElement.innerHTML = post.private ? '<span><i class="fas fa-lock"></i> Private</span>' : '';
+                    postElement.appendChild(postControlsElement);
+
+                    // Add the post element to the container
+                    searchResultsContainer.appendChild(postElement);
+                });
+            });
+    }
+
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const query = urlParams.get('query');
+        document.getElementById('search-query').textContent = query;
+        loadSearchResults(query);
+    }
+        function likePost(uuid) {
+            fetch('/like/' + uuid, { method: 'POST' })
+               .then(response => response.json())
+               .then(data => console.log(data));
+        }
+
+        function goToComments(uuid) {
+            window.location.href = '/post/' + uuid;
+        }
+
+        function goToUser(username) {
+            window.location.href = '/user/' + username;
+        }
+        function goToUrl(url) {
+            window.location.href = location.origin + url;
+        }
+        function handleSearch(event) {
+            event.preventDefault();
+            const query = event.target.elements.query.value;
+            window.location.href = '/search?query=' + encodeURIComponent(query);
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="btn-text whitehover" onclick="goToUrl('/')"><h1>Innogram</h1></button>
+            <div class="header-search">
+                <form onsubmit="handleSearch(event)">
+                    <input type="text" name="query" placeholder="Search..." />
+                </form>
+            </div>
+            <div class="header-right-side">
+                <button class="btn-text whitehover" onclick="goToUrl('/create')">
+                    <h1 class="new-post"><i class="fas fa-plus"></i> New post</h1>
+                </button>
+                <button class="btn-text whitehover" onclick="goToUser('{{ selfusername }}')">
+                    <h1  class="username"><i class="fas fa-user"></i> {{ selfusername }} </h1>
+                </button>
+            </div>
+        </div>
+        <div class="main">
+            <div class="search-results-container">
+                <h2 class="search-query">Search results for "<span id="search-query">query</span>"</h2>
+                <div class="posts">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

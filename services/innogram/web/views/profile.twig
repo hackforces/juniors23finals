@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* Styles from the main page are reused */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #eeeeee;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 60%;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            background: linear-gradient(45deg, #3494E6, #EC6EAD);
+            color: white;
+            height: 30px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+        .header h1, .header h2 {
+            margin: 0;
+            font-size: 22px;
+        }
+        .main {
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+        }
+        .user-info {
+            background-color: #fff;
+            padding: 20px;
+            padding-left:40px;
+            border-radius: 10px;
+            box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .user-info h3, .user-info p, .user-info button {
+            margin: 0;
+            margin-left: 20px;
+        }
+        .user-info button {
+            background-color: #3494E6;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .user-info button:hover {
+            background-color: #267ac8;
+        }
+        .toggle-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .toggle-container input {
+            margin-right: 10px;
+        }
+        .posts {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        .post {
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .post:hover {
+            transform: scale(1.01);
+        }
+        .post-image {
+            mxa-width: 100%;
+            height: 0;
+            padding-bottom: 100%;
+            background-size: cover;
+            background-position: center;
+            background-color: e6e6e6;
+        }
+        .footer {
+            text-align: center;
+            color: #888;
+            margin-top: 40px;
+            font-size: 14px;
+        }
+        .no-posts {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            color: #888;
+            font-size: 20px;
+        }
+        .username {
+            word-wrap: break-word;
+            margin-top: 0px;
+            word-wrap: break-word;
+            margin-top: 0px;
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; 
+        }
+        .btn-text {
+            background: none;
+            border: none;
+            color: inherit;
+            text-align: left;
+            font: inherit;
+            cursor: pointer;
+            margin: 0px;
+            padding: 0px;
+        }
+        .btn-text:hover {
+            color: #3494E6;
+        }
+        .whitehover:hover {
+            color: white;
+        }
+        .search-query {
+            text-align: center;
+            margin-top: 0;
+        }
+        .header-search {
+            display: flex;
+            align-items: center;
+        }
+        .header-search input {
+            padding: 5px;
+            width: 200px;
+            border-radius: 7px;
+            border: none;
+            border-radius: 10px;
+        }
+        .new-post {
+            padding-right: 20px;
+        }
+        .header-right-side {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script>
+        // Fetching user data from the server
+        fetch(`/api/user/{{ username }}`, {"method":"get"})
+        .then(response => {
+            if (!response.ok) {
+            throw new Error('User does not exist');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Selecting the user info container
+            const userInfoContainer = document.querySelector('.user-info h3');
+            userInfoContainer.textContent = data.username;
+
+            // Selecting the posts container
+            const postsContainer = document.querySelector('#posts');
+            const noPosts = document.querySelector('#noPosts');
+            const subscribeButton = document.querySelector('.user-info button');
+            
+            // Check if there are any posts
+            if (data.posts.length === 0) {
+                postsContainer.style.display = 'block';
+                noPosts.style.display = 'flex';
+            } else {
+                // Looping through each post
+                data.posts.forEach((post, index) => {
+                    // Creating the post element
+                    const postElement = document.createElement('div');
+                    postElement.classList.add('post');
+                    if (post.private) {
+                    postElement.classList.add('private');
+                    }
+
+                    // Creating the post link
+                    const postLink = document.createElement('a');
+                    postLink.href = `/user/${data.username}/${post.post_id}`;
+
+                    // Creating the post image
+                    const postImage = document.createElement('div');
+                    postImage.classList.add('post-image');
+                    postImage.style.backgroundImage = `url(/uploads?file=${post.image})`;
+
+                    // Adding the post image to the post link
+                    postLink.appendChild(postImage);
+
+                    // Adding the post link to the post element
+                    postElement.appendChild(postLink);
+
+                    // Adding the post element to the posts container
+                    postsContainer.appendChild(postElement);
+                });
+            }
+
+            subscribeButton.addEventListener('click', function() {
+                if (subscribeButton.classList.contains('subscribed')) {
+                    fetch('/api/unsubscribe', {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({id: data.id})
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            subscribeButton.classList.remove('subscribed');
+                            subscribeButton.textContent = 'Subscribe';
+                            subscribeButton.style.backgroundColor = '#3494E6';
+                        } else {
+                            console.error('Error unsubscribing');
+                        }
+                    });
+                } else {
+                    fetch('/api/subscribe', {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({id: data.id})
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            subscribeButton.classList.add('subscribed');
+                            subscribeButton.textContent = 'Unsubscribe';
+                            subscribeButton.style.backgroundColor = 'red';
+                        } else {
+                            console.error('Error subscribing');
+                        }
+                    });
+                }
+            });
+
+            if (data.subscriptionStatus == "myself") {
+                subscribeButton.remove();
+            }
+            else { 
+                if (data.subscriptionStatus == "subscribed") {
+                    subscribeButton.classList.add('subscribed');
+                    subscribeButton.textContent = 'Unsubscribe';
+                    subscribeButton.style.backgroundColor = 'red';
+                }
+            }
+        })
+        .catch(error => {
+            document.body.innerHTML = 'User not found';
+        });
+
+
+
+        function togglePrivatePosts() {
+            var button = document.getElementById('toggleButton');
+            var postsArr = document.getElementsByClassName('post');
+            var posts = document.getElementById('posts');
+            var privatePosts = document.getElementsByClassName('private');
+            var noPosts = document.getElementById('noPosts');
+            for (var i = 0; i < postsArr.length; i++) {
+                if (!postsArr[i].classList.contains('private')) {
+                    postsArr[i].style.display = button.checked ? 'none' : 'grid';
+                }
+                    
+            }
+            if (button.checked && privatePosts.length == 0) {
+                posts.style.display = 'block';
+                noPosts.style.display = 'flex';
+            }
+            else {
+                if (postsArr.length != 0) {
+                    posts.style.display = 'grid';
+                    noPosts.style.display = 'none';
+                }
+            }
+        }
+
+        function goToUrl(url) {
+            window.location.href = location.origin + url;
+        }
+        function goToUser(username) {
+            window.location.href = '/user/' + username;
+        }
+        function handleSearch(event) {
+            event.preventDefault();
+            const query = event.target.elements.query.value;
+            window.location.href = '/search?query=' + encodeURIComponent(query);
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="btn-text whitehover" onclick="goToUrl('/')"><h1>Innogram</h1></button>
+            <div class="header-search">
+                <form onsubmit="handleSearch(event)">
+                    <input type="text" name="query" placeholder="Search..." />
+                </form>
+            </div>
+            
+            <div class="header-right-side">
+                <button class="btn-text whitehover" onclick="goToUrl('/create')">
+                    <h1 class="new-post"><i class="fas fa-plus"></i> New post</h1>
+                </button>
+                <button class="btn-text profileBtn whitehover" onclick="goToUser('{{ username }}')">
+                    <h1 class="username"><i class="fas fa-user"></i> {{ username }}</h1>
+                </button>
+            </div>
+        </div>
+        <div class="main">
+            <div class="user-info">
+                <i class="fa fa-user fa-2x"></i>
+                <div>
+                    <h3>{{ username }}</h3>
+                    <button>Subscribe</button>
+                </div>
+            </div>
+            <div class="toggle-container">
+                <input type="checkbox" id="toggleButton" onclick="togglePrivatePosts()"><label for="toggleButton">Private Only</label>
+            </div>
+            <div class="posts" id="posts" style="display: grid;">
+                <h2 id="noPosts" class="no-posts" style="display: none;">
+                    Nothing here
+                </h2>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

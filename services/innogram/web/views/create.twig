@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #eeeeee;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 60%;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            background: linear-gradient(45deg, #3494E6, #EC6EAD);
+            color: white;
+            height: 30px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+        .header h1, .header h2 {
+            margin: 0;
+            font-size: 22px;
+        }
+        .main {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .post-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            margin-top: 5px;
+        }
+        .form-group input[type="checkbox"] {
+            width: auto;
+            margin: 10px 5px 0 0;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            border: none;
+        }
+        .form-group button {
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            background-color: #3494E6;
+            color: white;
+            margin-top: 10px;
+        }
+        .header-right-side {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            word-wrap: break-word;
+            margin-top: 0px;
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; 
+        }
+        .new-post {
+            padding-right: 20px;
+        }
+        .btn-text {
+            background: none;
+            border: none;
+            color: inherit;
+            text-align: left;
+            font: inherit;
+            cursor: pointer;
+            margin: 0px;
+            padding: 0px;
+        }
+        .btn-text:hover {
+            color: #3494E6;
+        }
+        .whitehover:hover {
+            color: white;
+        }
+        #post-description {
+            width: 95%;
+            resize: vertical;
+            min-height: 100px;
+            max-height: 250px;
+        }
+        #post-title, #post-image{
+            width: 95%;
+        }
+        .search-query {
+            text-align: center;
+            margin-top: 0;
+        }
+        .header-search {
+            display: flex;
+            align-items: center;
+        }
+        .header-search input {
+            padding: 5px;
+            width: 200px;
+            border-radius: 7px;
+            border: none;
+            border-radius: 10px;
+        }
+        .username {
+            word-wrap: break-word;
+            margin-top: 0px;
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; 
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script>
+        function goToUser(username) {
+            window.location.href = '/user/' + username;
+        }
+        function goToUrl(url) {
+            window.location.href = location.origin + url;
+        }
+        function handleSearch(event) {
+            event.preventDefault();
+            const query = event.target.elements.query.value;
+            window.location.href = '/search?query=' + encodeURIComponent(query);
+        }
+    </script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <button class="btn-text whitehover" onclick="goToUrl('/')"><h1>Innogram</h1></button>
+                <div class="header-search">
+                    <form action="/search" method="get">
+                        <input type="text" name="query" placeholder="Search..." />
+                    </form>
+                </div>
+                <div class="header-right-side">
+                    <button class="btn-text profileBtn whitehover" onclick="goToUser('{{ username }}')">
+                        <h1 class="username"><i class="fas fa-user"></i> {{ username }}</h1>
+                    </button>
+                </div>
+            </div>
+            <div class="main">
+                <div class="post-form">
+                    <form action="/create" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="post-image">Upload Image</label>
+                            <input id="post-image" type="file" name="image" accept=".png, .jpg, .jpeg" />
+                        </div>
+                        <div class="form-group">
+                            <label for="post-description">Description</label>
+                            <textarea id="post-description" placeholder="Enter post description" name="description"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <input type="checkbox" id="private-post" name="private" />
+                            <label for="private-post">Private Post</label>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit">Create Post</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

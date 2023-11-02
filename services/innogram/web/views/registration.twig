@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #eeeeee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 30%;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(45deg, #3494E6, #EC6EAD);
+            color: white;
+            border-radius: 10px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 22px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 95%;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(45deg, #3494E6, #EC6EAD);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .btn-submit:hover {
+            transform: scale(1.01);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Register</h1>
+        </div>
+        <form action="/registration" method="post" accept-charset="UTF-8">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" minlength="3" maxlength="50" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" minlength="3" maxlength="50" required>
+            </div>
+            <button type="submit" class="btn-submit">Sign Up</button>
+        </form>
+    </div>
+</body>
+</html>

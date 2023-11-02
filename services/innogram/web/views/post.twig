@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #eeeeee;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 60%;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            background: linear-gradient(45deg, #3494E6, #EC6EAD);
+            color: white;
+            height: 30px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+        .header h1, .header h2 {
+            margin: 0;
+            font-size: 22px;
+        }
+        .main {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .posts, .new-profiles {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        .posts {
+            width: 80%;
+            margin-right: 14px;
+        }
+        .post {
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            max-height: 700px;
+        }
+        .post:hover {
+            transform: scale(1.01);
+        }
+        .post-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .post-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            max-height: 500px;
+        }
+        .new-profiles {
+            width: 30%;
+            height: 500px;
+        }
+        .profile-name {
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .profile-name:hover {
+            color: #3494E6;
+        }
+        .profile {
+            display: flex;
+            flex-direction: column;
+        }
+        .profile p {
+            margin: 5px;
+        }
+        .username {
+            word-wrap: break-word;
+            margin-top: 0px;
+            word-wrap: break-word;
+            margin-top: 0px;
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; 
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #888;
+            font-size: 14px;
+        }
+        .btn-text {
+            background: none;
+            border: none;
+            color: inherit;
+            text-align: left;
+            font: inherit;
+            cursor: pointer;
+            margin: 0px;
+            padding: 0px;
+        }
+        .btn-text:hover {
+            color: #3494E6;
+        }
+        .whitehover:hover {
+            color: white;
+        }
+        .comments-section {
+            width: 45%;
+            height: 485px;
+        }
+        .comments {
+            overflow-y: auto;
+            max-height: 75%;
+        }
+        .comment {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        .comment:last-child {
+            border-bottom: none;
+        }
+        .comment-input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        .comment-username {
+            margin: 0;
+            padding: 0;
+        }
+        .comment p {
+            margin: 0;
+            padding: 0;
+            font-size: 14px;    
+            word-wrap: break-word;
+            width: 97%;
+        }
+        .comment-input {
+            border: 1px solid #ccc;
+            width: 90%;
+        }
+        .post-comment-button {
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            background-color: #3494E6;
+            color: white;
+            margin-top: 10px;
+        }
+        .header-right-side {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+        }
+        .new-post {
+            padding-right: 20px;
+        }
+        .search-query {
+            text-align: center;
+            margin-top: 0;
+        }
+        .header-search {
+            display: flex;
+            align-items: center;
+        }
+        .header-search input {
+            padding: 5px;
+            width: 200px;
+            border-radius: 7px;
+            border: none;
+            border-radius: 10px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script>
+        fetch(`/api/user/{{ username }}/{{ post_id }}`)
+        .then(response => {
+            if (!response.ok) {
+            throw new Error('User or post does not exist');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Selecting the post image container
+            const postImageContainer = document.querySelector('.post-image');
+            postImageContainer.src = `/uploads?file=${data.post.image}`;
+
+            // Selecting the post description container
+            const postDescriptionContainer = document.querySelector('.post p');
+            postDescriptionContainer.textContent = data.post.description;
+
+            // Selecting the comments container
+            const commentsContainer = document.querySelector('#comments');
+            const likeIcon = document.querySelector('#likeIcon');
+            if (data.isLiked) {
+                likeIcon.style.color = '#ff0000';
+            }
+            // Looping through each comment
+            data.comments.forEach((comment) => {
+                // Creating the comment element
+                const commentElement = document.createElement('div');
+                commentElement.classList.add('comment');
+
+                // Creating the comment username button
+                const commentUsernameButton = document.createElement('button');
+                commentUsernameButton.classList.add('btn-text');
+                commentUsernameButton.onclick = () => goToUser(comment.username);
+
+                // Adding the comment username
+                const commentUsername = document.createElement('h4');
+                commentUsername.classList.add('comment-username');
+                commentUsername.textContent = comment.username;
+                commentUsernameButton.appendChild(commentUsername);
+
+                // Adding the comment text
+                const commentText = document.createElement('p');
+                commentText.textContent = comment.comment;
+
+                // Adding the comment username button and text to the comment element
+                commentElement.appendChild(commentUsernameButton);
+                commentElement.appendChild(commentText);
+
+                // Adding the comment element to the comments container
+                commentsContainer.appendChild(commentElement);
+            });
+        })
+        .catch(error => {
+            document.body.innerHTML = 'User or post not found';
+        });
+
+
+        function likePost(username, post_id) {
+            fetch('/api/like', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: `${username}`, post_id: `${post_id}`})
+                })
+               .then(response => {
+                    if (!response.ok) {
+                    throw new Error('Error while liking');
+                    }
+                    else {
+                        const likeIcon = document.querySelector('#likeIcon');
+                        if (likeIcon.style.color == "") {
+                            likeIcon.style.color = '#ff0000';
+                        }
+                        else {
+                            likeIcon.style.color = null;
+                        }
+                    }
+                    return response.json();
+                })
+               .then(data => console.log(data));
+        }
+        function goToUser(username) {
+            window.location.href = '/user/' + username;
+        }
+        function postComment() {
+            let commentText = document.getElementById('new-comment').value;
+            fetch('/api/comment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ comment: `${commentText}`, post_owner_username: '{{ username }}', post_id: '{{ post_id }}'})
+            })
+            .then(response => {
+                if (!response.ok) {
+                throw new Error('Error while posting comment');
+                }
+                return response.json();
+            })
+            .then(data => {
+                let newComment = document.createElement('div');
+                newComment.className = 'comment';
+                newComment.innerHTML = `<h4 class="comment-username">{{ selfusername }}</h4><p>${commentText}</p>`;
+                document.getElementById('comments').appendChild(newComment);
+                document.getElementById('new-comment').value = '';
+            });
+        }
+        function goToUrl(url) {
+            window.location.href = location.origin + url;
+        }
+        function handleSearch(event) {
+            event.preventDefault();
+            const query = event.target.elements.query.value;
+            window.location.href = '/search?query=' + encodeURIComponent(query);
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="btn-text whitehover" onclick="goToUrl('/')"><h1>Innogram</h1></button>
+            <div class="header-search">
+                <form onsubmit="handleSearch(event)">
+                    <input type="text" name="query" placeholder="Search..." />
+                </form>
+            </div>
+            <div class="header-right-side">
+                <button class="btn-text whitehover" onclick="goToUrl('create')">
+                    <h1 class="new-post"><i class="fas fa-plus"></i> New post</h1>
+                </button>
+                <button class="btn-text whitehover" onclick="goToUser('{{ selfusername }}')">
+                    <h1  class="username"><i class="fas fa-user"></i> {{ selfusername }}</h1>
+                </button>
+            </div>
+        </div>
+        <div class="main">
+            <div class="posts">
+                <div class="post">
+                    <button class="btn-text" onclick="goToUser('{{ username }}')"><h3 class="username">{{ username }} <i class="fas fa-camera"></i></h3></button>
+                    <img class="post-image" src="" alt=""/>
+                    <p>Description for this post.</p>
+                    <div class="post-controls">
+                        <span><button class="btn-text" onclick="likePost('{{ username }}', '{{ post_id }}')"><i class="fas fa-heart" id="likeIcon"></i> Like</button></span>
+                        <span><i class="fas fa-lock"></i> Private</span>
+                    </div>
+                </div>
+            </div>
+            <div class="comments-section new-profiles">
+                <h3 style="margin: 0;">Comments</h3>
+                <hr>
+                <div id="comments" class="comments">
+                </div>
+                <input id="new-comment" class="comment-input" type="text" min-length="1" max-length="500" placeholder="Add a comment..." />
+                <button class="post-comment-button" onclick="postComment()">Post</button>
+            </div>
+        </div>
+        </div>
+        
+    </div>
+</body>
+</html>
