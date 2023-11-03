@@ -16,8 +16,7 @@ class User {
   }
 
   static async getNewProfiles() {
-    // This is just an example. Replace this with your actual logic to get new profiles.
-    return await db.any('SELECT * FROM users ORDER BY id DESC LIMIT 10');
+    return await db.any('SELECT id, username FROM users ORDER BY id DESC LIMIT 10');
   }
 
   static async comparePassword(password, hash) {
