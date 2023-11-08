@@ -1,0 +1,47 @@
+{% extends "base.html" %}d
+
+{% block content %}
+  <ol class="list-group">
+    {% for post in posts %}
+    <li class="list-group-item d-flex justify-content-between align-items-start" style="border: blanchedalmond; border-radius: 10px">
+      <div class="ms-2 me-auto">
+        <h1 class="fw-bold">{{ post[0] }}. {{ post[1] }}</h1>
+        <h3 class="body">{{ post[2] }}</h3>
+        <h5>available to {{ post[3] }}</h5>
+        <small>Author - <b><i>{{ post[5] }}</i></b></small>
+        {% if post[5] == username %}
+          <form action="/update" method="post">
+            <input name="post_id" value="{{ post[0] }}" hidden>
+            <button type="submit" class="btn btn-info" style="padding-bottom: 15px">Update</button>
+          </form>
+        {% endif %}
+        <hr/>
+        <h4>Comments:</h4>
+        {% for comment in post[4] %}
+          <div class="card mb-4">
+          <div class="card-body">
+            <p>{{ comment.text }}</p>
+
+            <div class="d-flex justify-content-between">
+              <div class="d-flex flex-row align-items-center">
+                <p class="small mb-0 ms-2">Author - <i><b>{{ comment.author_username_id }}</b></i></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        <form class="container" method="post" action="/">
+        <div class="form-outline mb-4">
+          <label class="form-label">Your comment</label>
+          <input name="comment" class="form-control"/>
+          <input type="hidden" name="post_id" value={{post[0]}} />
+          <button type=submit class="btn btn-primary btn-block mb-2">Write</button>
+        </div>
+        </form>
+      </div>
+    </li>
+
+    <div style="padding-bottom: 5px"></div>
+    {% endfor %}
+  </ol>
+{% endblock %}

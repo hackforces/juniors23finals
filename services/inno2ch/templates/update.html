@@ -1,0 +1,25 @@
+{% extends "base.html" %}d
+
+{% block content %}
+<form class="col-lg-5 container" method="post" action="/update">
+    <h1 style="text-align: center; padding-bottom: 25px">Update post</h1>
+    <div class="form-group" style="padding-bottom: 25px;">
+        <h3 style="text-align: center; padding-bottom: 15px;">Title of article</h3>
+        <input class="form-control" name="title" placeholder="Enter title">
+    </div>
+    <div class="form-group" style="padding-bottom: 25px;">
+        <h3 style="text-align: center; padding-bottom: 15px;">Body of article</h3>
+        <textarea class="form-control" name="body" rows="3"></textarea>
+    </div>
+    <div class="form-group" style="padding-bottom: 25px;">
+        <h3 style="text-align: center; padding-bottom: 15px;">Available to</h3>
+        <input class="form-control" name="available" placeholder="Write login">
+    </div>
+    <input name="post_id" value="{{ post_id }}" hidden>
+    <button type=submit class="btn btn-primary btn-block mb-4">Post it</button>
+    {% if error %}
+    <div class="alert alert-danger" id="incorrect" role="alert">Incorrect data</div>
+    {% endif %}
+    </div>
+</form>
+{% endblock %}

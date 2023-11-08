@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form class="col-lg-5 container" method="post" action="/login">
+    <h1 style="text-align: center; padding-bottom: 25px">Login</h1>
+    <div class="form-outline mb-4">
+      <label class="form-label">Username</label>
+      <input name="login" class="form-control"/>
+    </div>
+    <div class="form-outline mb-4">
+      <label class="form-label">Password</label>
+      <input name="password" type="password" class="form-control" />
+    </div>
+    <a href='/register'><div>Dot't have account</div></a>
+    <button type=submit class="btn btn-primary btn-block mb-4">Sign in</button>
+    {% if is_loggined is defined %}
+    <div class="alert alert-danger" id="incorrect" role="alert">Incorrect credentials</div>
+    {% endif %}
+</form>
+{% endblock %}
