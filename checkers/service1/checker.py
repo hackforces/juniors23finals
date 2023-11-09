@@ -5,8 +5,7 @@ import requests
 import random
 
 from checklib import *
-from schizics_lib import *
-
+from innogram_lib import *
 from pathlib import Path
 
 BASE_DIR = Path(__file__).absolute().resolve().parent
@@ -43,29 +42,29 @@ class Checker(BaseChecker):
             if username == profile["username"]:
                 userFound = True
                 break
-        self.c.assert_eq(userFound, True, "No checker user found in new profiles", Status.CORRUPT)
+        self.assert_eq(userFound, True, "No checker user found in new profiles", Status.CORRUPT)
 
         image_files = [f for f in os.listdir(images_path) if os.path.isfile(os.path.join(images_path, f))]
         random_image = random.choice(image_files)
-        with open(f'{images_path}{random_image}', 'rb') as f:
+        with open(f'{images_path}/{random_image}', 'rb') as f:
             image_data = f.read()
-        self.mch.create_post(session, private=False, description=description, file=image_data)
-        self.mch.create_comment(session, post_owner=username, post_id=1, text=comment)
+        self.mch.create_post(session, private=False, description=description, file=image_data, status=Status.MUMBLE)
+        self.mch.create_comment(session, post_owner=username, post_id=1, text=comment, status=Status.MUMBLE)
 
         data = self.mch.get_post(session, username=username, post_id=1, status=Status.MUMBLE)
         self.assert_eq(data["post"]["description"], description, "Description value is invalid", Status.CORRUPT)
         self.assert_eq(data["comments"][0]["comment"], comment, "Comment text is invalid", Status.CORRUPT)
 
         data = self.mch.get_uploadsFile(session, filename=data["post"]["image"], status=Status.MUMBLE)
-        self.assert_in(data.headers['Content-Type'], 'image', "Post image retrieval attempt returned nonimage file", Status.MUMBLE)
+        self.assert_in('image', data.headers['Content-Type'], "Post image retrieval attempt returned nonimage file", Status.MUMBLE)
 
         postsFound = self.mch.get_searchResult(session, query=description, status=Status.MUMBLE)
         postFound = False
         for post in postsFound:
-            if username == post["description"]:
+            if description == post["description"]:
                 postFound = True
                 break
-        self.c.assert_eq(postFound, True, "No post found using search", Status.CORRUPT)
+        self.assert_eq(postFound, True, "No post found using search", Status.CORRUPT)
         self.cquit(Status.OK)
 
         #check if comment posted == comment gotten + desciption == description + search working + image viewing
@@ -78,25 +77,24 @@ class Checker(BaseChecker):
         self.mch.login(session, username, password, Status.MUMBLE)
         image_files = [f for f in os.listdir(images_path) if os.path.isfile(os.path.join(images_path, f))]
         random_image = random.choice(image_files)
-        with open(f'{images_path}{random_image}', 'rb') as f:
+        with open(f'{images_path}/{random_image}', 'rb') as f:
             image_data = f.read()
         post_id = 1
         if vuln == "1":
             for i in range(random.randint(1, 4)):
                 description = rnd_string(20)
-                self.mch.create_post(session, private=False, description=description, file=image_data)
+                self.mch.create_post(session, private=False, description=description, file=image_data, status=Status.MUMBLE)
                 random_image = random.choice(image_files)
-                with open(f'{images_path}{random_image}', 'rb') as f:
+                with open(f'{images_path}/{random_image}', 'rb') as f:
                     image_data = f.read()
                 post_id += 1
-
             self.mch.create_post(session, private=True, description=flag, file=image_data, status=Status.MUMBLE)
-            self.cquit(Status.OK, f'{username}', f'{username}:{password}:{post_id}')
+            # self.cquit(Status.OK, username, f'{username}:{password}:{post_id}')
         elif vuln == "2":
             description = rnd_string(20)
             self.mch.create_post(session, private=True, description=description, file=image_data, status=Status.MUMBLE)
             self.mch.create_comment(session, post_owner=username, post_id=1, text=flag, status=Status.MUMBLE)
-            self.cquit(Status.OK, f'{username}', f'{username}:{password}:{post_id}')
+        self.cquit(Status.OK, f"{username}", f'{username}:{password}:{post_id}')
 
     def get(self, flag_id: str, flag: str, vuln: str):
         session = self.get_initialized_session()

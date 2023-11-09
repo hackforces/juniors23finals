@@ -1,3 +1,4 @@
+
 import requests
 
 from checklib import *
@@ -19,8 +20,8 @@ class CheckMachine:
             "username": username,
             "password": password
         })
-        self.c.assert_neq(response.cookies.get("connect.sid"), None, "connect.sid not set on registration")
-        self.c.assert_eq(302, response.status_code, "invalid response on registration")
+        self.c.assert_neq(session.cookies.get("connect.sid"), None, "connect.sid not set on registration")
+        self.c.assert_eq(200, response.status_code, "invalid response on registration")	
 
     def login(self, session: requests.Session, username: str, password: str, status: Status):
         url = f'{self.url}/login'
@@ -28,7 +29,7 @@ class CheckMachine:
             "username": username,
             "password": password
         })
-        self.c.assert_eq(302, response.status_code, "invalid response on login", status)
+        self.c.assert_eq(200, response.status_code, "invalid response on login", status)
 
     def create_post(self, session: requests.Session, private: bool, description: str, file: bytes, status: Status):
         url = f'{self.url}/create'
@@ -37,13 +38,12 @@ class CheckMachine:
         }
         if private:
             data['private'] = 'on'
-        response = session.post(url, data=data, files={
-            "image": image_data
-        })
-        self.c.assert_eq(302, response.status_code, "failed to create post", status)
+        files= {'image': ('image.jpg', file, 'multipart/form-data') }
+        response = session.post(url, data=data, files=files)
+        self.c.assert_eq(200, response.status_code, "failed to create post", status)
 
     def create_comment(self, session: requests.Session, post_owner: str, post_id: int, text: str, status: Status):
-        url = f'{self.url}/create'
+        url = f'{self.url}/api/comment'
         data = {
             "post_owner_username": post_owner,
             "post_id": post_id,
@@ -53,15 +53,14 @@ class CheckMachine:
         data = self.c.get_json(response, "Invalid response on adding new comment", status)
         self.c.assert_eq(type(data), dict, "Invalid response on adding new comment", status)
         self.c.assert_eq(data["success"], True, "Adding new comment wasn't success", status)
-        
 
     def get_post(self, session: requests.Session, username: str, post_id: int, status: Status) -> dict: 
         url = f'{self.url}/api/user/{username}/{post_id}'
         response = session.get(url)
         data = self.c.get_json(response, "Invalid response on getting post", status)
         self.c.assert_eq(type(data), dict, "Invalid response on getting post", status)
-        self.c.assert_eq(data["username"], username, "Invalid response on getting post", status)
-        self.c.assert_eq(data["post"], dict, "Invalid response on getting post", status)
+        self.c.assert_eq(data['username'], username, "Invalid response on getting post", status)
+        self.c.assert_eq(type(data["post"]), dict, "Invalid response on getting post", status)
         return data
     
     def get_newProfiles(self, session: requests.Session, status: Status) -> list: 

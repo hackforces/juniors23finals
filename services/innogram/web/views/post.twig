@@ -210,6 +210,13 @@
             if (data.isLiked) {
                 likeIcon.style.color = '#ff0000';
             }
+            const privacyStatus = document.querySelector('#privacy');
+            if (data.post.private) {
+                privacyStatus.innerHTML = '<i class="fas fa-lock"></i> Private';
+            } else {
+                privacyStatus.innerHTML = '<i class="fas fa-unlock"></i> Public';
+            }
+
             // Looping through each comment
             data.comments.forEach((comment) => {
                 // Creating the comment element
@@ -327,7 +334,7 @@
                     <p>Description for this post.</p>
                     <div class="post-controls">
                         <span><button class="btn-text" onclick="likePost('{{ username }}', '{{ post_id }}')"><i class="fas fa-heart" id="likeIcon"></i> Like</button></span>
-                        <span><i class="fas fa-lock"></i> Private</span>
+                        <span id="privacy"><i class="fas fa-lock"></i> Private</span>
                     </div>
                 </div>
             </div>
