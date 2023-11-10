@@ -1,6 +1,7 @@
 version: '3'
 services:
   web:
+    image: cr.yandex/crp197i8gqfluum9e2pu/innogram:latest
     build: web/.
     ports:
       - "8080:8080"
@@ -9,6 +10,7 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:password@db:5432/postgres
   db:
+    image: cr.yandex/crp197i8gqfluum9e2pu/db:latest
     build: db/.
     environment:
       - POSTGRES_DB=postgres

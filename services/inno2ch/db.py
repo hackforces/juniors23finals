@@ -30,3 +30,11 @@ class Comments(BaseModel):
     author_username = ForeignKeyField(Users, 'login', backref='comments')
     post_id = ForeignKeyField(Posts, 'id', backref='comments')
     text = TextField()
+
+Comments.drop_table()
+Users.drop_table()
+Comments.drop_table()
+
+Comments.create_table()
+Users.create_table()
+Posts.create_table()

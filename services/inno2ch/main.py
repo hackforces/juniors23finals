@@ -1,4 +1,6 @@
+
 from flask import Flask, render_template, request, make_response, redirect
+import db
 from db import Users, Posts, Comments
 from jwt_actions import make_jwt, decode_jwt
 
