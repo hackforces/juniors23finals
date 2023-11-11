@@ -2,17 +2,16 @@ from checklib import *
 import requests
 from bs4 import BeautifulSoup
 
-PORT = 5000
-
+PORT = 9000
 
 class CheckMachine:
     @property
     def url(self) -> str:
-        return f'http://{self.c.host}:{self.port}'
+        return f'http://{self.c.host}:{self.port}/'
 
     def __init__(self, checker: BaseChecker):
         self.c = checker
-        self.port = 5000
+        self.port = PORT
 
     @staticmethod
     def session_with_requests():
@@ -30,7 +29,7 @@ class CheckMachine:
         for post in soup.findAll('div', class_='ms-2 me-auto'):
             cur_post_id, cur_post_title = post.find('h1', 'fw-bold').text.split('. ')
             body = post.find('h3', class_='body').text
-            if cur_post_title == title and body:
+            if cur_post_title == title and need_body:
                 return cur_post_id, body
             elif cur_post_title == title:
                 return cur_post_id
@@ -42,8 +41,8 @@ class CheckMachine:
         for post in soup.findAll('div', class_='ms-2 me-auto'):
             cur_post_id, cur_post_title = post.find('h1', 'fw-bold').text.split('. ')
             body = post.find('h3', class_='body').text
-            if cur_post_title == post_id and need_body:
-                return cur_post_id, body
+            if cur_post_id == post_id and need_body:
+                return cur_post_title, body
             elif cur_post_title == post_id:
                 return cur_post_id
         return

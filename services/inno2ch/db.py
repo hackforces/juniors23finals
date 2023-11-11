@@ -1,4 +1,5 @@
 from peewee import SqliteDatabase, Model, AutoField, CharField, TextField, ForeignKeyField
+import os
 
 
 class BaseModel(Model):

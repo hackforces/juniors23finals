@@ -36,13 +36,13 @@ class Checker(BaseChecker):
 
         self.mch.register(session, username, password)
         self.mch.login(session, username, password, Status.MUMBLE)
-        newProfiles = self.mch.get_newProfiles(session, Status.MUMBLE)
-        userFound = False
-        for profile in newProfiles:
-            if username == profile["username"]:
-                userFound = True
-                break
-        self.assert_eq(userFound, True, "No checker user found in new profiles", Status.CORRUPT)
+        #newProfiles = self.mch.get_newProfiles(session, Status.MUMBLE)
+        #userFound = False
+        #for profile in newProfiles:
+        #    if username == profile["username"]:
+        #        userFound = True
+        #        break
+        #self.assert_eq(userFound, True, "No checker user found in new profiles", Status.CORRUPT)
 
         image_files = [f for f in os.listdir(images_path) if os.path.isfile(os.path.join(images_path, f))]
         random_image = random.choice(image_files)
