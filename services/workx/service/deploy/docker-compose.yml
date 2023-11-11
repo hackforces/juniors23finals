@@ -1,0 +1,41 @@
+services:
+  workworkwork:
+    restart: always
+    build: .
+    command: /workx3
+    ports:
+      - "44555:44556"
+    depends_on:
+      workworkwork_db:
+        condition: service_healthy
+    volumes:
+      - jwt-secrets:/jwt
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+
+  workworkwork_db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: gorm
+      POSTGRES_PASSWORD: gorm
+      POSTGRES_DB: gorm
+    volumes:
+      - workworkwork_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+
+volumes:
+  workworkwork_db_data:
+  jwt-secrets:

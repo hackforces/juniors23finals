@@ -1,0 +1,10 @@
+go.mod
+go.sum
+.gptignore
+.idea
+.idea/*
+output.txt
+test.db
+*.br
+img/*
+*.webp

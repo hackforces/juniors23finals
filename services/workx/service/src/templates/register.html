@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h2>Register</h2>
+    <form id="registerForm">
+        <input type="text" id="username" placeholder="Username" required><br>
+        <input type="text" id="password" placeholder="Password" required><br>
+        <select id="role" required>
+            <option value="freelancer">Freelancer</option>
+            <option value="job-giver">Job Giver</option>
+        </select><br>
+        <input type="submit" value="Register">
+    </form>
+</div>
+<script>
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        var data = {
+            username: document.getElementById('username').value,
+            password: document.getElementById('password').value,
+            role: document.getElementById('role').value
+        };
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/register', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(data));
+
+        xhr.onload = function() {
+            if (xhr.status === 201) {
+                alert('Registration successful. Redirecting to login page...');
+                window.location.href = '/login';
+            } else {
+                alert('Registration failed: ' + xhr.responseText);
+            }
+        };
+    });
+</script>
+</body>
+</html>

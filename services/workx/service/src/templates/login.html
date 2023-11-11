@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h2>Login</h2>
+    <form id="loginForm">
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="text" id="password" placeholder="Password" required>
+        <input type="submit" value="Login">
+    </form>
+</div>
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        var data = {
+            username: document.getElementById('username').value,
+            password: document.getElementById('password').value
+        };
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/login', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(data));
+
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                alert('Login successful. Redirecting to home page...');
+                window.location.href = '/';
+            } else {
+                alert('Login failed: ' + xhr.responseText);
+            }
+        };
+    });
+</script>
+</body>
+</html>
