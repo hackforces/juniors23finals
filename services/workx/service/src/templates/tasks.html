@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Tasks</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+
+</head>
+<body>
+<div class="username-display">Hello, {{.Username}}</div>
+
+<div class="container">
+    <h1>Tasks</h1>
+    <div>
+        <input type="text" id="title" placeholder="Title">
+        <textarea id="description" placeholder="Description" rows="6" cols="70"></textarea><br><br>
+        <button class="btn" onclick="createTask()">Create Task</button>
+    </div>
+    {{range .Tasks}}
+    <div class="task">
+        <h2><a href="/task/{{.ID}}">{{.Title}}</a></h2>
+        <p><b>Status:</b> {{.Status}}</p>
+        <p><b>Description:</b><br><br>{{.Description}}</p>
+        <!-- <p><b>Status:</b> {{.Status}} {{if eq .Status "open"}}<button class="btn" onclick="completeTask('{{.ID}}')">Complete Task</button>{{end}}</p>
+        <div>
+            <input type="text" id="freelancer_id_{{.ID}}" placeholder="Freelancer ID">
+            <button class="btn" onclick="assignTask('{{.ID}}')">Assign</button>
+        </div>
+        <div>
+            <input type="hidden" id="task_id_{{.ID}}" value="{{.ID}}">
+            <textarea id="comment_{{.ID}}" placeholder="Comment" rows="4"></textarea>
+            <button class="btn" onclick="addComment('{{.ID}}')">Add Comment</button>
+        </div> !-->
+    </div>
+    {{end}}
+</div>
+<button class="logout-btn" onclick="logout()">Logout</button>
+<script>
+    function createTask() {
+        let title = document.getElementById('title').value;
+        let description = document.getElementById('description').value;
+        fetch('/task', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: title, description: description })
+        }).then(() => location.reload());
+    }
+
+    function assignTask(id) {
+        let freelancer_id = document.getElementById('freelancer_id_' + id).value;
+        fetch('/task/' + id, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ freelancer_id: freelancer_id })
+        }).then(() => location.reload());
+    }
+
+    function logout() {
+        document.cookie = 'session=; Max-Age=-99999999;';
+        window.location.href = '/';
+    }
+
+</script>
+</body>
+</html>

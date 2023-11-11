@@ -1,0 +1,168 @@
+.container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 1em;
+    text-align: center;
+}
+.container h2 {
+    margin-bottom: 1em;
+}
+
+input[type="text"],
+input[type="password"], select {
+    display: block;
+    margin: 0 auto 1em;
+    padding: 0.5em;
+    width: 80%;
+}
+
+input[type="submit"] {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 0.5em 1em;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 0 auto;
+    cursor: pointer;
+    transition-duration: 0.4s;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+.btn {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 0.5em 1em;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 0;
+    margin-bottom: 7px;
+    cursor: pointer;
+    transition-duration: 0.4s;
+}
+
+.btn:hover {
+    background-color: #45a049;
+}
+
+.task {
+    border: 1px solid #000000;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+body {
+ background-color: #f4f4f4;
+ font-family: Arial, sans-serif;
+}
+
+.container {
+    width: 80%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1em;
+    text-align: center;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    border-radius: 5px;
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 1em;
+}
+
+.task-input, .assign-task, .add-comment {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+input[type="text"] {
+    padding: 0.5em;
+    width: 70%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.btn {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 0.5em 1em;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition-duration: 0.4s;
+    border-radius: 5px;
+}
+
+.btn:hover {
+    background-color: #45a049;
+}
+
+.btn-complete {
+    margin-top: 1em;
+}
+
+.task {
+    border: 1px solid #ddd;
+    padding: 1em;
+    margin: 1em 0;
+    border-radius: 5px;
+}
+
+.task-title {
+    font-size: 1.2em;
+    color: #333;
+    margin-bottom: 0.5em;
+}
+
+.task-description, .task-status {
+    color: #666;
+    margin-bottom: 1em;
+}
+
+.task-status span {
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+.logout-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #0000FF; /* Blue background */
+    color: white;
+    padding: 0.5em 1em;
+    text-decoration: none;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    background-color: #000099; /* Darker blue on hover */
+}
+
+.username-display {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 14px;
+    color: #333;
+}
+.comment {
+    text-align: left;
+    /* other styles for comment */
+}

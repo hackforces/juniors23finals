@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Task Details</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+</head>
+<body>
+<div class="username-display">Hello, {{.Username}}</div>
+<div class="container">
+    <h2>Task: {{.Task.Title}}</h2>
+    <div class="task-details">
+        <p><b>Description:</b> {{.Task.Description}}</p>
+        <p><b>Status:</b> {{.Task.Status}} {{if eq .Task.Status "open"}}<button class="btn" onclick="completeTask('{{.Task.ID}}')">Complete Task</button>{{end}}</p>
+        <p><b>Comments:</b></p>
+        <div id="comments">
+            {{range .Comments}}
+            <div class="comment">
+                <p><b>By <code>{{index $.Usernames .UserID}}</code>:</b> {{.Content}}</p>
+            </div>
+            {{else}}
+            <p>No comments yet.</p>
+            {{end}}
+        </div>
+        <div>
+            <input type="hidden" id="task_id_{{.Task.ID}}" value="{{.Task.ID}}">
+            <textarea id="comment_{{.Task.ID}}" placeholder="Comment" rows="6" cols="70"></textarea><br><br>
+            <button class="btn" onclick="addComment('{{.Task.ID}}')">Add Comment</button>
+        </div>
+        <br><br><br>
+        <div class="assign-task">
+            <input type="hidden" id="task_id" value="{{.Task.ID}}">
+            <input type="text" id="nickname" placeholder="User's nickname">
+            <button class="btn" onclick="assignToUser()">Assign to User</button>
+        </div>
+    </div>
+</div>
+<button class="logout-btn" onclick="logout()">Logout</button>
+
+<script>
+    function assignToUser() {
+        let nickname = document.getElementById('nickname').value;
+        let taskID = document.getElementById('task_id').value;
+
+        fetch('/task/' + taskID + '/assign-to', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nickname: nickname })
+        }).then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    alert('Task assigned successfully to ' + nickname);
+                } else {
+                    alert('Failed to assign task to ' + nickname + ': ' + data.message);
+                }
+            });
+    }
+
+
+    function addComment(id) {
+        let content = document.getElementById('comment_' + id).value;
+        fetch('/task/' + id + '/comment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content: content })
+        }).then(() => location.reload());
+    }
+
+    function completeTask(id) {
+        fetch('/task/' + id + '/complete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({})
+        }).then(() => location.reload());
+    }
+
+    function logout() {
+        document.cookie = 'session=; Max-Age=-99999999;';
+        window.location.href = '/';
+    }
+</script>
+</body>
+</html>
